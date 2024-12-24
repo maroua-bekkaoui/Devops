@@ -42,17 +42,17 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin %DOCKER_REGISTRY%"
-                    }
+          stage('Push Docker Image') {
+                   steps {
+                       script {
+                           withCredentials([usernamePassword(credentialsId: '2024', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                               bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin %DOCKER_REGISTRY%"
+                           }
 
-                    bat "docker push %DOCKER_REPO%:%BUILD_NUMBER%"
-                }
-            }
-        }
+                           bat "docker push %DOCKER_REPO%:%BUILD_NUMBER%"
+                       }
+                   }
+               }
 
 //         stage('Deploy to Remote Server') {
 //             steps {
