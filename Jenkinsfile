@@ -43,24 +43,20 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: '2024', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        echo "DOCKER_USERNAME: %DOCKER_USERNAME%"
-                        echo "DOCKER_PASSWORD: %DOCKER_PASSWORD%"
+                    def dockerUsername = 'marouabekkaoui20@gmail.com'
+                    def dockerPassword = '123456789'
+                    def dockerRegistry = 'docker.io'
+                    def dockerRepo = 'marouabekkaoui/calculator-app'
 
-                        bat """
-                            powershell -Command \"
-                                \$env:DOCKER_USERNAME='%DOCKER_USERNAME%'
-                                \$env:DOCKER_PASSWORD='%DOCKER_PASSWORD%'
-                                \$env:DOCKER_REGISTRY='%DOCKER_REGISTRY%'
-                                echo \$env:DOCKER_PASSWORD | docker login -u \$env:DOCKER_USERNAME --password-stdin \$env:DOCKER_REGISTRY
-                            \"
-                        """
+                    bat """
+                        docker login -u ${dockerUsername} -p ${dockerPassword} ${dockerRegistry}
+                    """
 
-                        bat "docker push %DOCKER_REPO%:%BUILD_NUMBER%"
-                    }
+                    bat "docker push ${dockerRepo}:${BUILD_NUMBER}"
                 }
             }
         }
+
     }
 
     post {
