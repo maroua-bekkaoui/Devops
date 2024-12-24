@@ -44,20 +44,20 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: '2024', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        // Debugging the environment variables before login
-                        bat '''
-                            echo "DOCKER_USERNAME: %DOCKER_USERNAME%"
-                            echo "DOCKER_PASSWORD: %DOCKER_PASSWORD%"
-                            powershell -Command "
-                                $env:DOCKER_USERNAME='%DOCKER_USERNAME%'
-                                $env:DOCKER_PASSWORD='%DOCKER_PASSWORD%'
-                                $env:DOCKER_REGISTRY='%DOCKER_REGISTRY%'
-                                echo $env:DOCKER_PASSWORD | docker login -u $env:DOCKER_USERNAME --password-stdin $env:DOCKER_REGISTRY
-                            "
-                        '''
-                    }
+                        echo "DOCKER_USERNAME: %DOCKER_USERNAME%"
+                        echo "DOCKER_PASSWORD: %DOCKER_PASSWORD%"
 
-                    bat "docker push %DOCKER_REPO%:%BUILD_NUMBER%"
+                        bat """
+                            powershell -Command \"
+                                \$env:DOCKER_USERNAME='%DOCKER_USERNAME%'
+                                \$env:DOCKER_PASSWORD='%DOCKER_PASSWORD%'
+                                \$env:DOCKER_REGISTRY='%DOCKER_REGISTRY%'
+                                echo \$env:DOCKER_PASSWORD | docker login -u \$env:DOCKER_USERNAME --password-stdin \$env:DOCKER_REGISTRY
+                            \"
+                        """
+
+                        bat "docker push %DOCKER_REPO%:%BUILD_NUMBER%"
+                    }
                 }
             }
         }
@@ -65,10 +65,10 @@ pipeline {
 
     post {
         success {
-            echo 'Build and deploy were successful.'
+            echo 'Build and push to Docker registry were successful.'
         }
         failure {
-            echo 'Build or deployment failed.'
+            echo 'Build or push failed.'
         }
     }
 }
