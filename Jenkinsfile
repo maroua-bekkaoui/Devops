@@ -56,6 +56,18 @@ pipeline {
                 }
             }
         }
+          stage('Deploy to Railway') {
+                    steps {
+                        script {
+                            echo 'Deploying to Railway...'
+
+                            // Deploy the image to Railway using CLI
+                            sh '''
+                                railway up --docker
+                            '''
+                        }
+                    }
+                }
 
     }
 
