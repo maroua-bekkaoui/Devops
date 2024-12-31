@@ -40,28 +40,28 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    def dockerUsername = 'marouabekkaoui20@gmail.com'
-                    def dockerPassword = '123456789'
-                    def dockerRegistry = 'docker.io'
-                    def dockerRepo = 'marouabekkaoui/calculator-app'
+           stage('Push Docker Image') {
+                   steps {
+                       script {
+                           def dockerUsername = 'marouabekkaoui20@gmail.com'
+                           def dockerPassword = '123456789'
+                           def dockerRegistry = 'docker.io'
+                           def dockerRepo = 'marouabekkaoui/calculator-app'
 
-                    bat """
-                        docker login -u ${dockerUsername} -p ${dockerPassword} ${dockerRegistry}
-                    """
+                           bat """
+                               docker login -u ${dockerUsername} -p ${dockerPassword} ${dockerRegistry}
+                           """
 
-                    bat "docker push ${dockerRepo}:${BUILD_NUMBER}"
-                }
-            }
-        }
+                           bat "docker push ${dockerRepo}:${BUILD_NUMBER}"
+                       }
+                   }
+               }
+
           stage('Deploy to Railway') {
                     steps {
                         script {
                             echo 'Deploying to Railway...'
 
-                            // Deploy the image to Railway using CLI
                             sh '''
                                 railway up --docker
                             '''
